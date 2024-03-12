@@ -59,6 +59,15 @@ def format_prompt_gemma_1(Query,Context):
   """
   # print("prompt is : ",prompt)
   return prompt
+
+def continue_generation_prompt_mistral(Query,Context,PreviousAnswer):
+  prompt=f"""
+  [Complete the detailed answer for the query] "{Query}" [based on Context] ,
+  :> Context : {Context} ,
+  [Don't Repeat PreviousAnswer , just Continue Generating NextAnswer after PreviousAnswer]
+  :> PreviousAnswer : {PreviousAnswer} , 
+  """
+  return prompt
   
 load_dotenv()
 # REPLACE WITH YOUR HUGGING FACE ACCOUNT TOKEN ( Go to settings and get access token from hugging face)
@@ -75,30 +84,27 @@ def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
 
-def mistral_prompt_format(Query,Context):
-  mistral_prompt='<s>[INST] '+format_prompt_gemma_1(Query,Context)+'\n [/INST] Model answer</s>'
-  # print("mistral_prompt",mistral_prompt)
+def mistral_prompt_format(Query,Context,PreviousAnswer=None):
+  # print("In mistral_prompt_format : ",PreviousAnswer)
+
+  formatted_prompt=format_prompt_gemma_1(Query,Context) if (PreviousAnswer == None) else continue_generation_prompt_mistral(Query,Context,PreviousAnswer)
+  mistral_prompt='<s>[INST] '+formatted_prompt+'\n [/INST] Model answer</s>'
+  print("mistral_prompt",mistral_prompt)
   return mistral_prompt
 
-def infer(Query,Context):
+def infer(Query,Context,PreviousAnswer=None):
   try:
       # Prefix="Giving you 'Query' Below Answer appropriate based on Given 'Context'"
       Prefix="Hello, Spiritual Vivechan Expert, Answer appropriately for given 'Query' based on Given 'Context' provided"
 
-      # Query="Who are you? and Who am I?"
-      # Context="Mistral"
+      # print("In Infer PreviousAnswer : ",PreviousAnswer)
+
+      prompt=mistral_prompt_format(Query,Context,PreviousAnswer)
       
-    #   f"""
-    #       <s>[INST] 
-    # {Prefix}
-    
-    # 'Query' : {Query}
-    # 'Context' : {Context}
-    # [/INST]
-    # Model answer</s>
-    #       """
+      # print("prompt is : ",prompt)
+
       output = query({
-          "inputs": mistral_prompt_format(Query,Context),
+          "inputs": prompt,
           "parameters": 
         {
           "contentType": "application/json",

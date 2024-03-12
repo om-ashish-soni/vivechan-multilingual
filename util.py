@@ -14,7 +14,7 @@ import textwrap
 #         time.sleep(0.5)
 
 def write_answer(Answer,max_line_length):
-    paragraphs=Answer.split('<br/>')
+    paragraphs=Answer.split('>:')
     for paragraph in paragraphs:
         wrapped_text = textwrap.fill(paragraph, width=max_line_length)
 

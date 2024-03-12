@@ -79,36 +79,53 @@ if asked:
 
 
 # if "state" not in st.session_state:
-if True:
-    if st.button('Ask'):
-        st.session_state['state']=1
-        
-        asked=True
-        encoded=Encoder.encode([query])
-        D,I=VectorIndex.search(encoded,k)
-        Context=generate_context(Texts,I[0])
-        print("Going to infer")
-        Answer=infer(query,Context)
-        print("Retrived Answer")
 
-        # Answer=Context
-        
-        # print("Going to infer")
-        # Answer=generate_answer_from_llm(LLM_Tokenizer,LLM_Model,query,Context)
-        # print("Retrived Answer")
 
-        asked=False
-        
-        write_answer(Answer,max_line_length)
-        speak(Answer)
+def ask(IsContinue=False):
+    print("in ask function")
 
-        # del st.session_state['state']
-        asked=False
+    PreviousAnswer=st.session_state.get('PreviousAnswer','')
+    Answer=st.session_state.get('Answer','')
+
+    encoded=Encoder.encode([query])
+    D,I=VectorIndex.search(encoded,k)
+    Context=generate_context(Texts,I[0])
+    print("Going to infer")
+    
+    ArgumentPreviousAnswer=PreviousAnswer if IsContinue else None
+
+    # print("isContinue : ",IsContinue)
+    # print("PreviousAnswer : ",PreviousAnswer)
+    # print("ArgumentPreviousAnswer",ArgumentPreviousAnswer)
+
+    CurrentAnswer=infer(query,Context,ArgumentPreviousAnswer)
+    if IsContinue : Answer+=CurrentAnswer
+    else : Answer=CurrentAnswer
+    PreviousAnswer=Answer
+    
+    st.session_state['PreviousAnswer']=PreviousAnswer
+    st.session_state['Answer']=Answer
+
+    print("Retrived Answer")
+
+    write_answer(Answer,max_line_length)
+    st.session_state['ShouldContinue']=True
+    # speak(CurrentAnswer)
+
+    
+
+print("check session : ",st.session_state.get('ShouldContinue',False))
+if st.button('Ask'):
+    st.session_state['PreviousAnswer']=''
+    st.session_state['Answer']=''
+    st.session_state['ShouldContinue']=False
+    ask()
+    
+if st.session_state.get('ShouldContinue',False):
+    if st.button('Continue'):
+        ask(True)
         
         
-else:
-    if asked:
-        st.write("Generating Answer ......")
     
 
     
