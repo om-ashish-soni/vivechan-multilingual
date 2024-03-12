@@ -3,7 +3,7 @@ from text_to_speech import speak
 from dataset.dataset import load_text_dataset
 from indices.index import load_index
 from encoder.encoder import load_encoder
-from LLM.LLM import infer,load_llm
+from LLM.LLM import infer,load_llm,generate_answer_from_llm
 import streamlit as st
 import textwrap
 import time
@@ -88,7 +88,13 @@ if "state" not in st.session_state:
         # print("Going to infer")
         # Answer=infer(query,Context)
         # print("Retrived Answer")
-        Answer=Context
+
+        # Answer=Context
+        
+        print("Going to infer")
+        Answer=generate_answer_from_llm(LLM_Tokenizer,LLM_Model,query,Context)
+        print("Retrived Answer")
+
         asked=False
         
         write_answer(Answer,max_line_length)

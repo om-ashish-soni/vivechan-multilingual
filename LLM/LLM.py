@@ -39,6 +39,23 @@ def load_llm():
     # print("Done Loading LLM .....")
     # return LLM_Model
 
+def generate_answer_from_llm(LLM_Tokenizer,LLM_Model,Query,Context):
+  device=get_device()
+  prompt=format_prompt_gemma_1(Query,Context)
+  input_ids = tokenizer(prompt, return_tensors="pt").to(device)
+  outputs = model.generate(**input_ids)
+  model_answer=tokenizer.decode(outputs[0])
+  print("model_answer : ",model_answer)
+  return model_answer
+
+def format_prompt_gemma_1(Query,Context):
+  prompt=f"""
+  Give information related to "{Query}" from the Context below :
+  {Context}
+  """
+  print("prompt is : ",prompt)
+  return prompt
+  
 load_dotenv()
 # REPLACE WITH YOUR HUGGING FACE ACCOUNT TOKEN ( Go to settings and get access token from hugging face)
 hf_token=os.getenv('HF_TOKEN')
