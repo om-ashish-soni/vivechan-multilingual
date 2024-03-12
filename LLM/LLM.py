@@ -13,7 +13,7 @@ def load_llm():
     tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
     print("done loading tokenizer ....")
     print("loading LLM .....")
-    model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",  load_in_8bit=True)
+    model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1").to(device)
     print("done loading LLM .....")
     model.eval()
     return tokenizer,model
