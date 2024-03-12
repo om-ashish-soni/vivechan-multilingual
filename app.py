@@ -3,7 +3,7 @@ from text_to_speech import speak
 from dataset.dataset import load_text_dataset
 from indices.index import load_index
 from encoder.encoder import load_encoder
-from LLM.LLM import infer
+from LLM.LLM import infer,load_llm
 import streamlit as st
 import textwrap
 import time
@@ -37,6 +37,10 @@ def get_cached_index():
 def get_cached_text_dataset():
     return load_text_dataset()
 
+@st.cache_resource
+def get_cached_llm():
+    return load_llm()
+
 # print("Going to call : get_cached_encoder")
 Encoder=get_cached_encoder()
 
@@ -45,6 +49,9 @@ VectorIndex=get_cached_index()
 
 # print("Going to call : get_cached_text_dataset")
 Texts=get_cached_text_dataset()
+
+print("Going to call : get_cached_llm")
+LLM_Tokenizer,LLM_Model=get_cached_llm()
 
 
 

@@ -7,6 +7,17 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
 def load_llm():
     load_dotenv()
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+
+    print("loading tokenizer.....")
+    tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
+    print("done loading tokenizer ....")
+    print("loading LLM .....")
+    model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1",  load_in_8bit=True)
+    print("done loading LLM .....")
+    model.eval()
+    return tokenizer,model
+
     # bnb_config = BitsAndBytesConfig(
     #     load_in_4bit=True,
     #     bnb_4bit_use_double_quant=True,
