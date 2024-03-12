@@ -42,9 +42,13 @@ def load_llm():
 def generate_answer_from_llm(LLM_Tokenizer,LLM_Model,Query,Context):
   device=get_device()
   prompt=format_prompt_gemma_1(Query,Context)
-  input_ids = tokenizer(prompt, return_tensors="pt").to(device)
-  outputs = model.generate(**input_ids)
-  model_answer=tokenizer.decode(outputs[0])
+  print("going for tokenizing input ....")
+  input_ids = LLM_Tokenizer(prompt, return_tensors="pt").to(device)
+  print("done for tokenizing input ....")
+  print("going for model generate answer ....")
+  outputs = LLM_Model.generate(**input_ids,max_length=1024)
+  print("done for model generate answer ....")
+  model_answer=LLM_Tokenizer.decode(outputs[0])
   print("model_answer : ",model_answer)
   return model_answer
 

@@ -11,7 +11,7 @@ import json
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-k=10
+k=4
 max_line_length = 80
 
 def main():
@@ -77,7 +77,9 @@ asked=False
 if asked:
     st.write("generating answer .....")
 
-if "state" not in st.session_state:
+
+# if "state" not in st.session_state:
+if True:
     if st.button('Ask'):
         st.session_state['state']=1
         
@@ -100,7 +102,7 @@ if "state" not in st.session_state:
         write_answer(Answer,max_line_length)
         speak(Answer)
 
-        del st.session_state['state']
+        # del st.session_state['state']
         asked=False
         
         
