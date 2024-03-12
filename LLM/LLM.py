@@ -54,10 +54,10 @@ def generate_answer_from_llm(LLM_Tokenizer,LLM_Model,Query,Context):
 
 def format_prompt_gemma_1(Query,Context):
   prompt=f"""
-  Give information related to "{Query}" from the Context below :
-  {Context}
+  Answer the question in detail "{Query}" from the Context below :
+  Context : {Context}
   """
-  print("prompt is : ",prompt)
+  # print("prompt is : ",prompt)
   return prompt
   
 load_dotenv()
@@ -67,13 +67,18 @@ def query(payload):
     
     import requests
 
-    # API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
-    API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
+    API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+    # API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
 
     headers = {"Authorization": "Bearer "+hf_token}
     
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
+
+def mistral_prompt_format(Query,Context):
+  mistral_prompt='<s>[INST] '+format_prompt_gemma_1(Query,Context)+'\n [/INST] Model answer</s>'
+  # print("mistral_prompt",mistral_prompt)
+  return mistral_prompt
 
 def infer(Query,Context):
   try:
@@ -82,16 +87,18 @@ def infer(Query,Context):
 
       # Query="Who are you? and Who am I?"
       # Context="Mistral"
-      output = query({
-          "inputs": f"""
-          <s>[INST] 
-    {Prefix}
+      
+    #   f"""
+    #       <s>[INST] 
+    # {Prefix}
     
-    'Query' : {Query}
-    'Context' : {Context}
-    [/INST]
-    Model answer</s>
-          """,
+    # 'Query' : {Query}
+    # 'Context' : {Context}
+    # [/INST]
+    # Model answer</s>
+    #       """
+      output = query({
+          "inputs": mistral_prompt_format(Query,Context),
           "parameters": 
         {
           "contentType": "application/json",

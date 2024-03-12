@@ -50,8 +50,8 @@ VectorIndex=get_cached_index()
 # print("Going to call : get_cached_text_dataset")
 Texts=get_cached_text_dataset()
 
-print("Going to call : get_cached_llm")
-LLM_Tokenizer,LLM_Model=get_cached_llm()
+# print("Going to call : get_cached_llm")
+# LLM_Tokenizer,LLM_Model=get_cached_llm()
 
 
 
@@ -87,15 +87,15 @@ if True:
         encoded=Encoder.encode([query])
         D,I=VectorIndex.search(encoded,k)
         Context=generate_context(Texts,I[0])
-        # print("Going to infer")
-        # Answer=infer(query,Context)
-        # print("Retrived Answer")
+        print("Going to infer")
+        Answer=infer(query,Context)
+        print("Retrived Answer")
 
         # Answer=Context
         
-        print("Going to infer")
-        Answer=generate_answer_from_llm(LLM_Tokenizer,LLM_Model,query,Context)
-        print("Retrived Answer")
+        # print("Going to infer")
+        # Answer=generate_answer_from_llm(LLM_Tokenizer,LLM_Model,query,Context)
+        # print("Retrived Answer")
 
         asked=False
         

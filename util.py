@@ -29,9 +29,38 @@ def write_answer(Answer,max_line_length):
   
 def generate_context(Texts,Positions):
     context=""
+    # print("len",len(Positions))
+    ContextPositions=[]
+    window=2
+    importance=0
+    importance_map={}
     for Pos in Positions:
+        # print("for Pos : ",Pos)
+        importance+=1
+        left=max(0,Pos-window)
+        right=min(len(Texts)-1,Pos+window)
+        # print("left",left,"to","right",right)
+
+        for _Pos in range(left,right+1):
+            if _Pos not in importance_map:
+                importance_map[_Pos]=importance
+            # print("before",ContextPositions)
+            ContextPositions.append(_Pos)
+            # print("after",ContextPositions)
+
+        
+    ContextPositions=list(set(ContextPositions))
+    # print("before")
+    # print(ContextPositions)
+    # print("imp",[importance_map[_Pos] for _Pos in ContextPositions])
+    sortedContextPositions=sorted(ContextPositions,key=lambda x:[importance_map.get(x,0),x])
+    # print("after")
+    # print(sortedContextPositions)
+    # print("imp",[importance_map[_Pos] for _Pos in sortedContextPositions])
+    for Pos in ContextPositions:
         context+=Texts[Pos]+"<br/>\t"
     return context
+    # return ''
 
 # Define a function to dynamically set the device
 def get_device():
