@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
-# from util import get_device
+from util import get_device
 
 
 def load_llm():
