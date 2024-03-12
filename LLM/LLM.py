@@ -9,13 +9,16 @@ def load_llm():
     load_dotenv()
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
+
     print("loading tokenizer.....")
-    tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-v0.1")
+    tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it")
     print("done loading tokenizer ....")
     print("loading LLM .....")
-    model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1").to(device)
+    model = AutoModelForCausalLM.from_pretrained("google/gemma-2b-it").to(device)
     print("done loading LLM .....")
     model.eval()
+    print("model is in eval stage")
+    
     return tokenizer,model
 
     # bnb_config = BitsAndBytesConfig(
