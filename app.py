@@ -8,11 +8,18 @@ from LLM.LLM import infer
 import streamlit as st
 from translator import translate
 import httpcore
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+print(os.getenv('HF_DATASET_CHECKPOINT'))
+print(os.getenv('FAISS_INDEX_FILE_PATH'))
+
 setattr(httpcore, 'SyncHTTPTransport', None)
 
 
 # SOME STATIC VARIABLES
-k=10
+k=4
 max_line_length = 80
 language_choices = {
     'English': 'en',
