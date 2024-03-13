@@ -5,3 +5,5 @@ faiss-cpu
 streamlit
 googletrans==4.0.0-rc1
 gTTS
+httpcore==0.15.0
+httpx
