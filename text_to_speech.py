@@ -7,6 +7,7 @@ import io
 
 # filename=generate_unique_audio_filename()
 # print("filename",filename)
+playback_speed=1.25
 
 def speak(text,language='en'):
     try:
