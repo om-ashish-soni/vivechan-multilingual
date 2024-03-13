@@ -7,6 +7,9 @@ from encoder.encoder import load_encoder
 from LLM.LLM import infer
 import streamlit as st
 from translator import translate
+import httpcore
+setattr(httpcore, 'SyncHTTPTransport', None)
+
 
 # SOME STATIC VARIABLES
 k=10
