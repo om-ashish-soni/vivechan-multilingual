@@ -77,7 +77,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-query = st.text_input("Ask any question related to the Shiv Mahapuran: ")
+query = st.text_input("Ask any question related spritual matters i.e. Shiv Mahapuran, Shrimad Bhagwat , Shripad Charitramrutam : ")
 
 # SELECTING LANGUAGE
 language=language_choices[st.selectbox("Select Language:", list(language_choices.keys()))]
