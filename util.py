@@ -7,17 +7,31 @@ import torch
 import streamlit as st
 import time
 import textwrap
+from translator import translate
 
 # def speaking_icon(speaking_thread):
 #     while speaking_thread.is_alive():  # This will run indefinitely until stopped
 #         st.write("Speaking...")
 #         time.sleep(0.5)
 
-def write_answer(Answer,max_line_length):
-    paragraphs=Answer.split('>:')
-    for paragraph in paragraphs:
-        wrapped_text = textwrap.fill(paragraph, width=max_line_length)
+def write_answer(Answer,max_line_length,language='en'):
+    # spliting into paragraphs
+    paragraphs=Answer.split('\n\n')
+    TranslatedAnswer=''
 
+    # writing each paragraph and translating if it is other than 'en'
+    for paragraph in paragraphs:
+        translated_paragraph=paragraph
+
+        if language != 'en':
+            translated_paragraph=translate(paragraph,'en',language)
+
+        TranslatedAnswer+=translated_paragraph+'\n\n'
+
+        # text wrap for screen
+        wrapped_text = textwrap.fill(translated_paragraph, width=max_line_length)
+
+        # streaming the text
         placeholder = st.empty()
 
         prev_text=''
@@ -27,40 +41,34 @@ def write_answer(Answer,max_line_length):
             time.sleep(0.001)  # Adjust the sleep duration as needed
         st.write('\n\n')
   
+# context generation
 def generate_context(Texts,Positions):
     context=""
-    # print("len",len(Positions))
     ContextPositions=[]
     window=2
     importance=0
     importance_map={}
     for Pos in Positions:
-        # print("for Pos : ",Pos)
+        # taking previous and next few paragraphs in window
         importance+=1
         left=max(0,Pos-window)
         right=min(len(Texts)-1,Pos+window)
-        # print("left",left,"to","right",right)
 
+        # putting importance of paragraph
         for _Pos in range(left,right+1):
             if _Pos not in importance_map:
                 importance_map[_Pos]=importance
-            # print("before",ContextPositions)
             ContextPositions.append(_Pos)
-            # print("after",ContextPositions)
 
-        
+    # removing duplicate paragraphs
     ContextPositions=list(set(ContextPositions))
-    # print("before")
-    # print(ContextPositions)
-    # print("imp",[importance_map[_Pos] for _Pos in ContextPositions])
+    
+    # sorting context by similarity measures
     sortedContextPositions=sorted(ContextPositions,key=lambda x:[importance_map.get(x,0),x])
-    # print("after")
-    # print(sortedContextPositions)
-    # print("imp",[importance_map[_Pos] for _Pos in sortedContextPositions])
-    for Pos in ContextPositions:
+    
+    for Pos in sortedContextPositions:
         context+=Texts[Pos]+"<br/>\t"
     return context
-    # return ''
 
 # Define a function to dynamically set the device
 def get_device():
