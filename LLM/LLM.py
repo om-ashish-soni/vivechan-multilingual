@@ -23,7 +23,7 @@ def load_llm():
 # not in use as of now
 def generate_answer_from_llm(LLM_Tokenizer,LLM_Model,Query,Context):
   device=get_device()
-  prompt=format_prompt_gemma_1(Query,Context)
+  prompt=format_prompt_1(Query,Context)
   print("going for tokenizing input ....")
   input_ids = LLM_Tokenizer(prompt, return_tensors="pt").to(device)
   print("done for tokenizing input ....")
