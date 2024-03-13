@@ -66,7 +66,7 @@ Texts=get_cached_text_dataset()
 
 # UI
 st.title("Vivechan AI 🌟")
-st.subheader("AI based on Shiv Maha Puran")
+st.subheader("AI for spritual matters")
 st.markdown(
     """
     <style>
