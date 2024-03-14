@@ -43,7 +43,7 @@ def write_answer(Answer,max_line_length,language='en'):
   
 # context generation
 def generate_context(Texts,Positions):
-    context=""
+    context="\n\n\t"
     ContextPositions=[]
     window=2
     importance=0
@@ -67,7 +67,7 @@ def generate_context(Texts,Positions):
     sortedContextPositions=sorted(ContextPositions,key=lambda x:[importance_map.get(x,0),x])
     
     for Pos in sortedContextPositions:
-        context+=Texts[Pos]+"<br/>\t"
+        context+=Texts[Pos]+"\n\n\t"
     return context
 
 # Define a function to dynamically set the device

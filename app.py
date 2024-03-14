@@ -19,8 +19,10 @@ setattr(httpcore, 'SyncHTTPTransport', None)
 
 
 # SOME STATIC VARIABLES
-k=4
+k=10
 max_line_length = 80
+matching_threshold=0.50
+
 language_choices = {
     'English': 'en',
     'Hindi': 'hi',
@@ -95,8 +97,27 @@ def ask(IsContinue=False):
     
     # encoding and retriving context form vector index
     encoded=Encoder.encode([translated_query])
-    _,I=VectorIndex.search(encoded,k)
-    Context=generate_context(Texts,I[0])
+    Distance,Positions=VectorIndex.search(encoded,k)
+    Distance=Distance[0]
+    Positions=Positions[0]
+    min_distance=min(Distance)
+    max_distance=max(Distance)
+    if max_distance==min_distance:
+        max_distance+=0.001
+
+    Similarity=[(1-(dist-min_distance)/(max_distance-min_distance)) for dist in Distance]
+    
+    BetterPositions=[ Pos for i,Pos in enumerate(Positions) if Similarity[i] >= matching_threshold]
+
+    print("Distance : ",Distance)
+    print("Similarity : ",Similarity)
+
+    print("Positions : ",Positions)
+    print("BetterPositions : ",BetterPositions)
+
+    Context=generate_context(Texts,BetterPositions)
+
+    
     
     # generating answer from the context
     CurrentAnswer=infer(translated_query,Context)
@@ -115,6 +136,9 @@ def ask(IsContinue=False):
 
     # text to speech
     speak(Answer)
+
+    st.subheader("Full Context : ")
+    st.write(Context)
 
 if st.button('Ask'):
     st.session_state['PreviousAnswer']=''
